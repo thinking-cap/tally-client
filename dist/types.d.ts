@@ -38,6 +38,19 @@ export interface RouteResponse {
     confidence_score: number;
     decision_trace: string;
 }
+/** MCP structural telemetry block — v2.0 SDK and above. */
+export interface McpTelemetry {
+    /** Was the MCP output schema valid? */
+    output_schema_valid?: boolean;
+    /** Number of schema auto-repairs performed. */
+    schema_repair_count?: number;
+    /** Number of tool call schema errors. */
+    tool_call_schema_errors?: number;
+    /** True if a protocol invariant was violated. */
+    invariant_violation_flag?: boolean;
+    /** True if the MCP schema version didn't match the expected version. */
+    schema_version_mismatch?: boolean;
+}
 export interface TelemetryEvent {
     id: string;
     semantic_envelope: SemanticEnvelope;
@@ -53,6 +66,14 @@ export interface TelemetryEvent {
     outcome_signal?: OutcomeSignal;
     rule_violation_flag?: boolean;
     violation_type?: string;
+    /** Provider ID from the Tally provider registry. */
+    provider_id?: string;
+    /** MCP structural telemetry — include when tool calls were made (v2.0+). */
+    mcp_telemetry?: McpTelemetry;
+    /** Failure classification for unsuccessful calls. */
+    failure_class?: 'structural' | 'cognitive' | 'economic' | 'timeout';
+    /** Session ID for grouping multi-turn conversations. */
+    session_id?: string;
 }
 export interface TallyConfig {
     /** Tally API base URL. Defaults to TALLY_API_URL env var or http://localhost:5000 */

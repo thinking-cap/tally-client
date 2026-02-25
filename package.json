@@ -1,18 +1,26 @@
 {
   "name": "@thinking-cap/tally-client",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Tally routing intelligence client — report telemetry and get model recommendations",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "files": ["dist", "src"],
+  "files": [
+    "dist",
+    "src"
+  ],
   "scripts": {
-    "build":   "tsc",
+    "build": "tsc",
     "prepare": "tsc"
   },
-  "keywords": ["tally", "routing", "llm", "model-selection"],
+  "keywords": [
+    "tally",
+    "routing",
+    "llm",
+    "model-selection"
+  ],
   "license": "MIT",
   "devDependencies": {
     "@types/node": "^22.0.0",
-    "typescript":  "^5.3.3"
+    "typescript": "^5.3.3"
   }
 }
