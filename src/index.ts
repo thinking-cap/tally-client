@@ -7,5 +7,7 @@ export type {
   ToolDescriptor, ToolType, ToolComplexity,
   RouteRequest, RouteResponse,
   TelemetryEvent, TrustLevel, OutcomeSignal,
+  StreamPhase, StreamTelemetryEvent,
+  StreamStartEvent, StreamChunkEvent, StreamCompleteEvent, StreamErrorEvent,
 } from './types';
 export type { EnvelopeOpts } from './envelope';

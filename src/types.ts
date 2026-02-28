@@ -92,6 +92,62 @@ export interface TelemetryEvent {
   session_id?:          string;
 }
 
+// ─── Streaming Telemetry ──────────────────────────────────────────────────────
+// Chunk-level observability for streaming LLM calls.
+// Tally is NOT in the transport path — callers report chunks as a side-channel.
+// Whether to call reportStream() is entirely the caller's responsibility.
+
+export type StreamPhase = 'start' | 'chunk' | 'complete' | 'error';
+
+interface StreamTelemetryBase {
+  /** Ties all events for one stream together. Use your turn ID or a fresh UUID. */
+  stream_id:    string;
+  phase:        StreamPhase;
+  model_used:   string;
+  session_id?:  string;
+  provider_id?: string;
+}
+
+/** Emitted once when streaming begins. */
+export interface StreamStartEvent extends StreamTelemetryBase {
+  phase:              'start';
+  /** Optional — attach the routing envelope if you have it at stream start. */
+  semantic_envelope?: SemanticEnvelope;
+}
+
+/** Emitted per chunk. chunk_index is 0-based. */
+export interface StreamChunkEvent extends StreamTelemetryBase {
+  phase:              'chunk';
+  chunk_index:        number;
+  /** Per-chunk token count. Not all providers expose this; omit if unavailable. */
+  tokens_this_chunk?: number;
+  /** Wall-clock ms since stream started. */
+  elapsed_ms:         number;
+}
+
+/** Emitted once when streaming completes successfully. */
+export interface StreamCompleteEvent extends StreamTelemetryBase {
+  phase:         'complete';
+  tokens_input:  number;
+  tokens_output: number;
+  duration_ms:   number;
+  /** Total chunks received during this stream. */
+  chunk_count?:  number;
+}
+
+/** Emitted if streaming terminates with an error. */
+export interface StreamErrorEvent extends StreamTelemetryBase {
+  phase:        'error';
+  error_class?: 'timeout' | 'network' | 'rate_limit' | 'model_error' | 'unknown';
+  elapsed_ms:   number;
+}
+
+export type StreamTelemetryEvent =
+  | StreamStartEvent
+  | StreamChunkEvent
+  | StreamCompleteEvent
+  | StreamErrorEvent;
+
 // ─── Client config ────────────────────────────────────────────────────────────
 
 export interface TallyConfig {

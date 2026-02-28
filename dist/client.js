@@ -65,6 +65,29 @@ class TallyClient {
             // Silent — telemetry loss is acceptable, blocking user is not
         });
     }
+    /**
+     * Report a single streaming lifecycle event (start / chunk / complete / error).
+     * Fire-and-forget — identical contract to report().
+     *
+     * Tally is NOT in the transport path. Call this from your streaming loop
+     * if you want chunk-level observability. If you don't call it, that's fine —
+     * Tally will never know the difference and your stream is unaffected.
+     *
+     * Typical usage:
+     *   tally.reportStream({ stream_id: turnId, phase: 'start',    model_used })
+     *   // for each chunk:
+     *   tally.reportStream({ stream_id: turnId, phase: 'chunk',    model_used, chunk_index: i, elapsed_ms })
+     *   tally.reportStream({ stream_id: turnId, phase: 'complete', model_used, tokens_input, tokens_output, duration_ms })
+     */
+    reportStream(event) {
+        fetch(`${this.apiUrl}/telemetry/stream`, {
+            method: 'POST',
+            headers: this.headers(),
+            body: JSON.stringify({ ...event, sdk_version: exports.SDK_VERSION }),
+        }).catch(() => {
+            // Silent — telemetry loss is acceptable, blocking user is not
+        });
+    }
 }
 exports.TallyClient = TallyClient;
 //# sourceMappingURL=client.js.map
