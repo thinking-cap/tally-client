@@ -33,10 +33,16 @@ export interface RouteRequest {
     };
 }
 export interface RouteResponse {
+    /** Model recommendation constrained to the caller's declared providers. */
     recommended_model: string;
     exploration_flag: boolean;
     confidence_score: number;
     decision_trace: string;
+    /** v2 — best model across the entire registry regardless of provider gates.
+     *  Always populated. Use to surface "what you'd be picking if provider
+     *  access wasn't a concern". */
+    universal_best_model?: string;
+    universal_best_confidence?: number;
 }
 /** MCP structural telemetry block — v2.0 SDK and above. */
 export interface McpTelemetry {
