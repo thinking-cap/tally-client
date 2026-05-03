@@ -90,6 +90,12 @@ export interface TelemetryEvent {
   failure_class?:       'structural' | 'cognitive' | 'economic' | 'timeout';
   /** Session ID for grouping multi-turn conversations. */
   session_id?:          string;
+  /** Model Tally recommended at /route time. Pass through from RouteResponse so
+   *  Tally can compute follow-rate and surface "recommended vs used" history. */
+  recommended_model?:   string | null;
+  /** Whether the caller actually used Tally's recommendation. Optional — Tally
+   *  derives it from model_used === recommended_model when omitted. */
+  followed_recommendation?: boolean | null;
 }
 
 // ─── Streaming Telemetry ──────────────────────────────────────────────────────
