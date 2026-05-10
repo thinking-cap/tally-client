@@ -102,6 +102,11 @@ export interface TelemetryEvent {
   /** Whether the caller actually used Tally's recommendation. Optional — Tally
    *  derives it from model_used === recommended_model when omitted. */
   followed_recommendation?: boolean | null;
+  /** Provider's own identifier for this call (e.g. a row id in their own
+   *  message store). The Tally portal substitutes this into the provider's
+   *  configured `call_detail_url_template` when the user clicks a row.
+   *  The lookup happens in the user's browser — Tally never reads the value. */
+  external_call_id?:    string;
 }
 
 // ─── Streaming Telemetry ──────────────────────────────────────────────────────

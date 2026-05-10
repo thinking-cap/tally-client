@@ -1,6 +1,6 @@
 {
   "name": "@thinking-cap/tally-client",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Tally routing intelligence client — report telemetry and get model recommendations",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
