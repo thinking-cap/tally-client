@@ -9,5 +9,6 @@ export type {
   TelemetryEvent, TrustLevel, OutcomeSignal,
   StreamPhase, StreamTelemetryEvent,
   StreamStartEvent, StreamChunkEvent, StreamCompleteEvent, StreamErrorEvent,
+  QualityFeedback,
 } from './types';
 export type { EnvelopeOpts } from './envelope';

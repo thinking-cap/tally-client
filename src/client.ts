@@ -1,4 +1,4 @@
-import type { TallyConfig, RouteRequest, RouteResponse, TelemetryEvent, StreamTelemetryEvent } from './types';
+import type { TallyConfig, RouteRequest, RouteResponse, TelemetryEvent, StreamTelemetryEvent, QualityFeedback } from './types';
 
 export const SDK_VERSION = '0.1.0';
 
@@ -93,6 +93,26 @@ export class TallyClient {
       body:    JSON.stringify({ ...event, sdk_version: SDK_VERSION }),
     }).catch(() => {
       // Silent — telemetry loss is acceptable, blocking user is not
+    });
+  }
+
+  /**
+   * Attach a late quality judgment to already-reported events — the "a human
+   * reviewed it and didn't like the result" path. Addressed by event id,
+   * external_call_id, or session_id (all events sharing it are scored).
+   * Human ('user') scores override system-evaluator scores server-side; the
+   * next aggregation tick moves routing. Fire-and-forget like report().
+   *
+   *   tally.reportQuality({ session_id: `${tenantId}:${activityId}`,
+   *                         quality_score: 0.1, quality_slugs: ['incorrect'] })
+   */
+  reportQuality(feedback: QualityFeedback): void {
+    fetch(`${this.apiUrl}/telemetry/quality`, {
+      method:  'POST',
+      headers: this.headers(),
+      body:    JSON.stringify(feedback),
+    }).catch(() => {
+      // Silent — feedback loss is acceptable, blocking the reviewer is not
     });
   }
 }

@@ -150,5 +150,24 @@ export interface TallyConfig {
     /** Request timeout in ms. Defaults to 3000. Tally should never block your main call. */
     timeoutMs?: number;
 }
+/**
+ * Late-arriving quality judgment for already-reported events — POST /telemetry/quality.
+ * Exactly one selector is needed (id > session_id > external_call_id precedence
+ * server-side is by whichever is present first in that order).
+ */
+export interface QualityFeedback {
+    /** Single event id (the uuid the caller generated at report time). */
+    id?: string;
+    /** All events sharing this session (case-inferral uses tenant:activityId). */
+    session_id?: string;
+    /** All events sharing this external call id. */
+    external_call_id?: string;
+    /** 0 = worthless, 1 = perfect. */
+    quality_score: number;
+    /** e.g. ['incorrect', 'hallucinated', 'off_spec'] — omitted leaves slugs unchanged. */
+    quality_slugs?: string[];
+    /** 'user' (default; a human) always wins over system scores; 'system' never overwrites a human's. */
+    evaluator_type?: 'user' | 'system';
+}
 export {};
 //# sourceMappingURL=types.d.ts.map
