@@ -12,6 +12,12 @@ export type ToolType      = 'read_only' | 'mutating' | 'streaming' | 'external_a
 export type ToolComplexity = 'low' | 'medium' | 'high';
 export type TrustLevel    = 'certified' | 'private';
 export type OutcomeSignal = 'compliant' | 'escalated' | 'failed';
+export type EvaluatorType = 'user' | 'system';
+
+export type QualitySlug =
+  | 'correct' | 'incorrect' | 'hallucinated' | 'incomplete'
+  | 'too_verbose' | 'too_brief' | 'off_spec' | 'excellent'
+  | 'format_error' | 'tool_failure';
 
 export interface SemanticEnvelope {
   schema_version:          string;           // "1.0"
@@ -107,6 +113,15 @@ export interface TelemetryEvent {
    *  configured `call_detail_url_template` when the user clicks a row.
    *  The lookup happens in the user's browser — Tally never reads the value. */
   external_call_id?:    string;
+
+  /** Optional quality assessment (0.0–1.0). When present, Tally's bandit uses
+   *  it as the reward's quality base INSTEAD of bare success — this is the
+   *  signal that lets routing compare models on correctness, not transport.
+   *  Deterministic evaluators (schema validation, candidate-set checks) are
+   *  evaluator_type 'system'. */
+  quality_score?:   number;
+  quality_slugs?:   (QualitySlug | (string & {}))[];
+  evaluator_type?:  EvaluatorType;
 }
 
 // ─── Streaming Telemetry ──────────────────────────────────────────────────────
